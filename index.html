@@ -283,7 +283,7 @@ var vec=new THREE.Vector3();
  if(sbS.g){var sb=$("sb");if(Date.now()>sbS.until){sb.style.display="none";sbS.g=null}else{sbS.g.getWorldPosition(vec);vec.y+=1.6;vec.project(cam);sb.style.left=((vec.x*.5+.5)*w)+"px";sb.style.top=((-vec.y*.5+.5)*h)+"px"}}
  [[harsh,"name-harsh"],[me,"name-me"],[poo,"name-poo"]].forEach(function(n){var tag=$(n[1]),on=phase>=2&&n[0].visible;tag.style.display=on?"block":"none";if(on){n[0].getWorldPosition(vec);vec.y+=1.52;vec.project(cam);tag.style.left=((vec.x*.5+.5)*w)+"px";tag.style.top=((-vec.y*.5+.5)*h)+"px"}});
  labs.forEach(function(l){var on=phase>=2&&!modalOpen;l.el.style.display=on?"block":"none";if(on){l.g.getWorldPosition(vec);vec.y+=l.off;vec.project(cam);l.el.style.left=((vec.x*.5+.5)*w-l.el.offsetWidth/2)+"px";l.el.style.top=((-vec.y*.5+.5)*h)+"px"}});
- if(phase==0){vec.set(0,0,0);big.getWorldPosition(vec);vec.y+=1.4;vec.project(cam);bl.style.left=((vec.x*.5+.5)*w-bl.offsetWidth/2)+"px";bl.style.top=((-vec.y*.5+.5)*h)+"px"}
+ bl.style.display=phase==0?"block":"none";if(phase==0){vec.set(0,0,0);big.getWorldPosition(vec);vec.y+=1.4;vec.project(cam);bl.style.left=((vec.x*.5+.5)*w-bl.offsetWidth/2)+"px";bl.style.top=((-vec.y*.5+.5)*h)+"px"}
  R.render(scene,cam)})(0);
 </script>
 </body>
