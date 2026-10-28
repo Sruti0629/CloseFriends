@@ -126,9 +126,9 @@ harsh.visible=poo.visible=false;
 var hits=[],labs=[],visited={},phase=0,modalOpen=false;
 [[me,"me"],[harsh,"harsh"],[poo,"poo"]].forEach(function(c){c[0].userData.key=c[1];hits.push(c[0])});
 var CH={
- me:{n:0,turns:[["me","This is officially our friendship island! 💛"],["harsh","Then I’m in charge of the art. 🎨"],["poo","And I’m in charge of snacks! 🧺"],["me","Who’s taking our group photo? 📸"],["poo","I am! Everyone squeeze in!"],["harsh","Wait, I blinked. One more! 😄"]]},
- harsh:{n:0,turns:[["harsh","I have an idea for our next masterpiece. 🎨"],["me","Does it include all three of us? 💛"],["poo","And snacks? It should include snacks. 🧺"],["harsh","Obviously. This island needs a snack corner."],["me","Best idea you’ve had all day! 😄"],["poo","Quick, before Harsh starts painting the snacks!"]]},
- poo:{n:0,turns:[["poo","Important question: who brought the snacks? 🧺"],["me","You did, Poo. 😄"],["poo","Excellent. I knew I could count on me!"],["harsh","Save some for after the photos. 📸"],["poo","I can snack and smile at the same time!"],["me","That’s our Poo! 😂"]]}
+ me:{g:me,n:0,turns:[["me","This is officially our friendship island! 💛"],["harsh","Then I’m in charge of the art. 🎨"],["poo","And I’m in charge of snacks! 🧺"],["me","Who’s taking our group photo? 📸"],["poo","I am! Everyone squeeze in!"],["harsh","Wait, I blinked. One more! 😄"]]},
+ harsh:{g:harsh,n:0,turns:[["harsh","I have an idea for our next masterpiece. 🎨"],["me","Does it include all three of us? 💛"],["poo","And snacks? It should include snacks. 🧺"],["harsh","Obviously. This island needs a snack corner."],["me","Best idea you’ve had all day! 😄"],["poo","Quick, before Harsh starts painting the snacks!"]]},
+ poo:{g:poo,n:0,turns:[["poo","Important question: who brought the snacks? 🧺"],["me","You did, Poo. 😄"],["poo","Excellent. I knew I could count on me!"],["harsh","Save some for after the photos. 📸"],["poo","I can snack and smile at the same time!"],["me","That’s our Poo! 😂"]]}
 };
 var sbS={g:null,until:0};
 function talk(k){var c=CH[k],turn=c.turns[c.n],speakerKey=turn[0],g=CH[speakerKey].g;c.n=(c.n+1)%c.turns.length;var el=$("sb"),speaker=document.createElement("strong"),line=document.createElement("span");el.style.display="none";void el.offsetWidth;speaker.className="speaker";speaker.textContent=speakerKey=="harsh"?"Harsh":speakerKey=="poo"?"Poo":"Me";line.textContent=turn[1];el.dataset.speaker=speakerKey;el.replaceChildren(speaker,line);el.style.display="block";sbS.g=g;sbS.until=Date.now()+3400;tween(520,function(p){g.userData.hop=Math.sin(p*Math.PI)*.9})}
