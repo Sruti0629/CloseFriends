@@ -19,9 +19,15 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
 .sb{position:fixed;z-index:7;display:none;transform:translate(-50%,-100%);background:#fff;color:#2b2b3a;border-radius:18px;padding:9px 14px;font-size:15px;line-height:1.3;max-width:220px;text-align:center;box-shadow:0 4px 0 #0004;pointer-events:none;margin-top:-6px;animation:pp .35s cubic-bezier(.2,1.6,.4,1)}
 .sb:after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-9px;border:9px solid transparent;border-top:10px solid #fff;border-bottom:0}
 .sb .speaker{display:block;margin-bottom:3px;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.sb>span{display:block}
+.sb.has-photos{max-width:min(330px,90vw);width:max-content}
 .sb[data-speaker="harsh"] .speaker{color:#d75c18}
 .sb[data-speaker="me"] .speaker{color:#287ac2}
 .sb[data-speaker="poo"] .speaker{color:#c83c88}
+.chat-polaroids{display:flex;justify-content:center;gap:7px;margin:12px 0 2px}
+.chat-polaroid{width:clamp(68px,22vw,88px);padding:4px 4px 7px;background:#fff;box-shadow:0 2px 4px #0003;transform:rotate(var(--r))}
+.chat-polaroid img{display:block;width:100%;height:90px;object-fit:contain;background:#f1eee8}
+.chat-polaroid span{display:block;margin-top:4px;font-size:10px;line-height:1.1}
 .pf{position:fixed;z-index:8;font-size:26px;pointer-events:none;animation:pfu 1s ease-out forwards}
 @keyframes pfu{from{transform:translate(-50%,-50%) scale(.4);opacity:1}to{transform:translate(-50%,-220%) scale(1.3);opacity:0}}
 .lab{position:fixed;left:0;top:0;z-index:4;background:#fff;color:#333;border-radius:99px;padding:5px 12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #0004;white-space:nowrap;display:none}
@@ -123,6 +129,12 @@ function mkChar(hex,kind){var g=new THREE.Group();g.add(M(new THREE.CylinderGeom
  g.add(head);g.userData.head=head;island.add(g);return g}
 var me=mkChar("#5aa9ff","m"),harsh=mkChar("#ff8a3d","h"),poo=mkChar("#ff5fa2","p");
 me.position.set(0,T,.75);me.scale.y=.85;me.userData.head.rotation.x=.45;
+var selfieRig=new THREE.Group(),selfieArm=M(new THREE.CylinderGeometry(.055,.065,.72,8),mat("#ffd9b8"),.3,.92,.16),selfiePhone=new THREE.Group();
+selfieArm.rotation.z=-.42;selfieRig.add(selfieArm);
+selfiePhone.add(M(new THREE.BoxGeometry(.22,.36,.055),mat("#252532"),0,0,0));
+selfiePhone.add(M(new THREE.PlaneGeometry(.17,.27),new THREE.MeshBasicMaterial({color:"#6ab8ff"}),0,.015,.029));
+var selfieLens=M(new THREE.SphereGeometry(.025,8,6),new THREE.MeshBasicMaterial({color:"#ffffff"}),0,.145,.034);selfiePhone.add(selfieLens);
+selfiePhone.position.set(.5,1.38,.2);selfieRig.add(selfiePhone);me.add(selfieRig);selfieRig.visible=false;
 harsh.visible=poo.visible=false;
 // interactables
 var hits=[],labs=[],visited={},phase=0,modalOpen=false;
@@ -137,8 +149,8 @@ var CHAT=[
  ["poo","I blinked! Can we take one more? 😅"]
 ];
 var CH={me:{g:me,n:0,turns:CHAT},harsh:{g:harsh,n:0,turns:CHAT},poo:{g:poo,n:0,turns:CHAT}};
-var sbS={g:null,until:0},chatTimer=0;
-function talk(k){clearTimeout(chatTimer);var turns=CH[k].turns,index=0,el=$("sb");function nextLine(){var turn=turns[index++],speakerKey=turn[0],g=CH[speakerKey].g,speaker=document.createElement("strong"),line=document.createElement("span");el.style.display="none";void el.offsetWidth;speaker.className="speaker";speaker.textContent=speakerKey=="harsh"?"Harsh":speakerKey=="poo"?"Poo":"Me";line.textContent=turn[1];el.dataset.speaker=speakerKey;el.replaceChildren(speaker,line);el.style.display="block";sbS.g=g;sbS.until=Date.now()+2500;tween(520,function(p){g.userData.hop=Math.sin(p*Math.PI)*.9});if(index<turns.length)chatTimer=setTimeout(nextLine,2500);else chatTimer=setTimeout(function(){el.style.display="none";sbS.g=null},2500)}nextLine()}
+var sbS={g:null,until:0},chatTimer=0,chatActive=false;
+function talk(k){clearTimeout(chatTimer);chatActive=true;selfieRig.visible=false;var turns=CH[k].turns,index=0,el=$("sb");function nextLine(){var turn=turns[index++],speakerKey=turn[0],g=CH[speakerKey].g,speaker=document.createElement("strong"),line=document.createElement("span"),lastLine=index==turns.length;el.style.display="none";el.classList.remove("has-photos");void el.offsetWidth;speaker.className="speaker";speaker.textContent=speakerKey=="harsh"?"Harsh":speakerKey=="poo"?"Poo":"Me";line.textContent=turn[1];el.dataset.speaker=speakerKey;el.replaceChildren(speaker,line);if(index==6){selfieRig.visible=true;setTimeout(function(){selfieLens.visible=false;setTimeout(function(){selfieLens.visible=true},180)},350)}if(lastLine){var strip=document.createElement("div");strip.className="chat-polaroids";[1,2,3].forEach(function(photoIndex,j){var photo=PHOTOS[photoIndex],card=document.createElement("div"),img=document.createElement("img"),caption=document.createElement("span");card.className="chat-polaroid";card.style.setProperty("--r",(j-1)*4+"deg");img.src=photo.src;img.alt=photo.cap;caption.textContent=photo.cap;card.appendChild(img);card.appendChild(caption);strip.appendChild(card)});el.classList.add("has-photos");el.appendChild(strip)}el.style.display="block";sbS.g=g;sbS.until=Date.now()+(lastLine?5500:2500);if(index<turns.length)chatTimer=setTimeout(nextLine,2500);else chatTimer=setTimeout(function(){el.style.display="none";el.classList.remove("has-photos");sbS.g=null;chatActive=false;selfieRig.visible=false},5500)}nextLine()}
 [[harsh,"name-harsh","harsh"],[me,"name-me","me"],[poo,"name-poo","poo"]].forEach(function(n){$(n[1]).addEventListener("click",function(e){e.stopPropagation();if(phase>=2&&!modalOpen)talk(n[2])})});
 function pf(x,y){var e=document.createElement("div");e.className="pf";e.textContent=["✨","💛","⭐","🫶"][Math.floor(Math.random()*4)];e.style.left=x+"px";e.style.top=y+"px";document.body.appendChild(e);setTimeout(function(){e.remove()},1000)}
 function inter(g,key,x,z,text,off){g.position.set(x,T,z);g.rotation.y=Math.atan2(-x,-z);g.userData.key=key;island.add(g);hits.push(g);
@@ -248,7 +260,7 @@ function clearSky(){if(phase!=0)return;phase=1;$("hud").classList.add("revealed"
   tween(1200,function(p){me.userData.head.rotation.x=.45*(1-p);me.scale.y=.85+.15*p})});
  arrive(harsh,-.72,.8,1700);arrive(poo,.72,.8,2300);
  setTimeout(function(){say("And then, both of you came into my life, like a light in the darkness. 💛")},3200);
- setTimeout(function(){say("Now it’s our island. Every little thing here holds a memory.","Click a memory button to explore · click any girl once to hear all three of us chat · drag to spin");phase=2;$("cnt").style.display="block"},7600)}
+ setTimeout(function(){say("Now it’s our island. Every little thing here holds a memory.","Click a memory button to explore · click Me to hear our chat · drag to spin");phase=2;$("cnt").style.display="block"},7600)}
 function act(key){if(key=="bigcloud")return clearSky();if(phase<2||modalOpen)return;if(CH[key])return talk(key);openModal(key)}
 function openModal(key){var d=DATA[key];visited[key]=1;modalOpen=true;
  $("mt").textContent=d.t;$("mp").innerHTML=d.p.map(function(t){return "<p>"+t+"</p>"}).join("");
@@ -289,7 +301,7 @@ var vec=new THREE.Vector3();
  if(rain.visible){var a=rg.attributes.position;for(var j=0;j<RN;j++){a.array[j*3+1]-=.05;if(a.array[j*3+1]<T)a.array[j*3+1]=4.3}a.needsUpdate=true}
  if(big.visible){big.position.y=4.7+Math.sin(t)*.12}
  [me,harsh,poo].forEach(function(c,j){if(c.visible&&(phase!=1||c===me||tw.length==0)&&(j==0||harsh.position.x<0&&phase>=2)){c.userData.head.rotation.z=Math.sin(t*2+j)*.06}});
- if(phase>=2){harsh.position.y=T+Math.abs(Math.sin(t*2.2))*.05+(harsh.userData.hop||0);poo.position.y=T+Math.abs(Math.sin(t*2.2+1))*.05+(poo.userData.hop||0);me.position.y=T+Math.abs(Math.sin(t*2+2))*.04+(me.userData.hop||0)}
+ if(phase>=2){var bob=chatActive?0:1;harsh.position.y=T+Math.abs(Math.sin(t*2.2))*.05*bob;poo.position.y=T+Math.abs(Math.sin(t*2.2+1))*.05*bob;me.position.y=T+Math.abs(Math.sin(t*2+2))*.04*bob}
  anim.forEach(function(f){f(t)});
  skyC.forEach(function(c){c.position.x+=c.userData.s*6;if(c.position.x>42)c.position.x=-42});
  bfl.forEach(function(b){b.g.visible=mood>.6;var an=t*b.s+b.ph;b.g.position.set(Math.cos(an)*b.r,b.h+Math.sin(t*2+b.ph)*.3,Math.sin(an)*b.r);b.g.rotation.y=-an;var fl=Math.sin(t*18+b.ph)*.9;b.wl.rotation.z=fl;b.wr.rotation.z=-fl});
