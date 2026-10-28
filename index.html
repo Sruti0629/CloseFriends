@@ -23,6 +23,10 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
 .lab{position:fixed;left:0;top:0;z-index:4;background:#fff;color:#333;border-radius:99px;padding:5px 12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #0004;white-space:nowrap;display:none}
 .lab:hover{transform:translateY(-2px) scale(1.08);box-shadow:0 5px 0 #0004}
 .lab.done{background:#c9f7c0}
+.char-name{position:fixed;z-index:4;display:none;transform:translate(-50%,-100%);padding:3px 10px;border:2px solid #fff;border-radius:99px;background:#fff;color:#333;font-size:13px;font-weight:700;box-shadow:0 2px 0 #0004;pointer-events:none;white-space:nowrap}
+#name-harsh{border-color:#ff8a3d}
+#name-me{border-color:#5aa9ff}
+#name-poo{border-color:#ff5fa2}
 @keyframes bn{50%{margin-top:-7px}}
 #modal,#fin{position:fixed;inset:0;z-index:20;background:#0009;display:none;align-items:center;justify-content:center;padding:4vw;touch-action:pan-y}
 #modal.on,#fin.on{display:flex}
@@ -46,6 +50,7 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
 <canvas id="c"></canvas>
 <div id="hud"><div class="ttl">Harsh, Poo &amp; Me: Our Little Island</div><div id="cnt" style="display:none">⭐ 0/5 memories found</div></div>
 <div id="labs"></div>
+<div class="char-name" id="name-harsh">Harsh</div><div class="char-name" id="name-me">Me</div><div class="char-name" id="name-poo">Poo</div>
 <div id="cap"></div><div class="sb" id="sb"></div>
 <div id="modal"><div class="mc"><button class="x" id="mx" type="button" aria-label="Close memory"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button><h2 id="mt"></h2><div id="mp"></div><div class="pols" id="mpol"></div></div></div>
 <div id="fin"><div class="mc"><h2>You found everything! 🎉</h2><p style="font-size:clamp(20px,4vw,28px)">You have no idea how much you mean to me. I’m so lucky to have you both in my life.</p><p style="font-size:clamp(22px,4.4vw,32px);font-weight:700;color:#e63946">I love you both so much, more than words can ever say. ❤️</p><button class="btn" id="fx">Keep exploring</button></div></div>
@@ -227,7 +232,7 @@ function clearSky(){if(phase!=0)return;phase=1;$("hud").classList.add("revealed"
   tween(1200,function(p){me.userData.head.rotation.x=.45*(1-p);me.scale.y=.85+.15*p})});
  arrive(harsh,-.72,.8,1700);arrive(poo,.72,.8,2300);
  setTimeout(function(){say("And then, both of you came into my life, like a light in the darkness. 💛")},3200);
- setTimeout(function(){say("Now it’s our island. Every little thing here holds a memory.","Click a glowing button to explore · tap the girls · drag to spin");phase=2;$("cnt").style.display="block"},7600)}
+ setTimeout(function(){say("Now it’s our island. Every little thing here holds a memory.","Click a glowing button to explore · tap Harsh, Me &amp; Poo · drag to spin");phase=2;$("cnt").style.display="block"},7600)}
 function act(key){if(key=="bigcloud")return clearSky();if(phase<2||modalOpen)return;if(CH[key])return talk(key);openModal(key)}
 function openModal(key){var d=DATA[key];visited[key]=1;modalOpen=true;
  $("mt").textContent=d.t;$("mp").innerHTML=d.p.map(function(t){return "<p>"+t+"</p>"}).join("");
@@ -276,6 +281,7 @@ var vec=new THREE.Vector3();
  var cf0=1+.9*Math.pow(1-Math.min(1,now/3200),3);cam.position.set(px*1.6,(1.8+dist*.17-py*.8)*cf0,dist*.95*cf0);cam.lookAt(0,1,0);
  var w=innerWidth,h=innerHeight;
  if(sbS.g){var sb=$("sb");if(Date.now()>sbS.until){sb.style.display="none";sbS.g=null}else{sbS.g.getWorldPosition(vec);vec.y+=1.6;vec.project(cam);sb.style.left=((vec.x*.5+.5)*w)+"px";sb.style.top=((-vec.y*.5+.5)*h)+"px"}}
+ [[harsh,"name-harsh"],[me,"name-me"],[poo,"name-poo"]].forEach(function(n){var tag=$(n[1]),on=phase>=2&&n[0].visible;tag.style.display=on?"block":"none";if(on){n[0].getWorldPosition(vec);vec.y+=1.62;vec.project(cam);tag.style.left=((vec.x*.5+.5)*w)+"px";tag.style.top=((-vec.y*.5+.5)*h)+"px"}});
  labs.forEach(function(l){var on=phase>=2&&!modalOpen;l.el.style.display=on?"block":"none";if(on){l.g.getWorldPosition(vec);vec.y+=l.off;vec.project(cam);l.el.style.left=((vec.x*.5+.5)*w-l.el.offsetWidth/2)+"px";l.el.style.top=((-vec.y*.5+.5)*h)+"px"}});
  if(phase==0){vec.set(0,0,0);big.getWorldPosition(vec);vec.y+=1.4;vec.project(cam);bl.style.left=((vec.x*.5+.5)*w-bl.offsetWidth/2)+"px";bl.style.top=((-vec.y*.5+.5)*h)+"px"}
  R.render(scene,cam)})(0);
