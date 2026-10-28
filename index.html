@@ -37,7 +37,7 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
 .char-name:hover{filter:brightness(1.13) drop-shadow(0 3px 3px #0008)}
 .char-name:focus-visible{outline:2px solid #fff;outline-offset:3px}
 #name-harsh{background:#e66a22}
-#name-me{background:#287ac2;transform:translate(-50%,-72%) rotate(4deg);clip-path:polygon(8% 0,100% 12%,93% 88%,0 100%)}
+#name-sru{background:#287ac2;transform:translate(-50%,-72%) rotate(4deg);clip-path:polygon(8% 0,100% 12%,93% 88%,0 100%)}
 #name-poo{background:#c83c88;transform:translate(-50%,-72%) rotate(-3deg);clip-path:polygon(0 0,92% 10%,100% 88%,8% 100%)}
 @keyframes bn{50%{margin-top:-7px}}
 #modal,#fin{position:fixed;inset:0;z-index:20;background:#0009;display:none;align-items:center;justify-content:center;padding:4vw;touch-action:pan-y}
@@ -60,8 +60,9 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
  #cap{padding:28px 6vw calc(14px + env(safe-area-inset-bottom,0px));font-size:clamp(18px,5.2vw,22px);line-height:1.2}
  #cap .hn{margin:8px auto 0;padding:5px 10px;font-size:12px;line-height:1.25}
  .char-name{padding:3px 7px 4px;font-size:12px}
- #name-harsh{translate:-14px 0}
- #name-poo{translate:14px 0}
+ #name-harsh{translate:-20px 34px}
+ #name-sru{translate:0 40px}
+ #name-poo{translate:20px 34px}
  .sb{max-width:min(220px,82vw);font-size:14px}
  .sb.has-photos{max-width:90vw}
  .chat-polaroid{width:clamp(62px,22vw,78px)}
@@ -79,9 +80,9 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="hud"><div class="ttl">Harsh, Poo &amp; Me: Our Little Island</div><div id="cnt" style="display:none">⭐ 0/5 memories found</div></div>
+<div id="hud"><div class="ttl">Harsh, Poo &amp; Sru: Our Little Island</div><div id="cnt" style="display:none">⭐ 0/5 memories found</div></div>
 <div id="labs"></div>
-<button class="char-name" id="name-harsh" type="button" aria-label="Harsh: click to chat">Harsh</button><button class="char-name" id="name-me" type="button" aria-label="Me: click to chat">Me</button><button class="char-name" id="name-poo" type="button" aria-label="Poo: click to chat">Poo</button>
+<button class="char-name" id="name-harsh" type="button" aria-label="Harsh: click to chat">Harsh</button><button class="char-name" id="name-sru" type="button" aria-label="Sru: click to chat">Sru</button><button class="char-name" id="name-poo" type="button" aria-label="Poo: click to chat">Poo</button>
 <div id="cap"></div><div class="sb" id="sb"></div>
 <div id="modal"><div class="mc"><button class="x" id="mx" type="button" aria-label="Close memory"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button><h2 id="mt"></h2><div id="mp"></div><div class="pols" id="mpol"></div></div></div>
 <div id="fin"><div class="mc"><h2>You found everything! 🎉</h2><p style="font-size:clamp(20px,4vw,28px)">You have no idea how much you mean to me. I’m so lucky to have you both in my life.</p><p style="font-size:clamp(22px,4.4vw,32px);font-weight:700;color:#e63946">I love you both so much, more than words can ever say. ❤️</p><button class="btn" id="fx">Keep exploring</button></div></div>
@@ -169,8 +170,8 @@ var CHAT=[
 ];
 var CH={me:{g:me,n:0,turns:CHAT},harsh:{g:harsh,n:0,turns:CHAT},poo:{g:poo,n:0,turns:CHAT}};
 var sbS={g:null,until:0},chatTimer=0,chatActive=false;
-function talk(k){clearTimeout(chatTimer);chatActive=true;selfieRig.visible=false;var turns=CH[k].turns,index=0,el=$("sb");function nextLine(){var turn=turns[index++],speakerKey=turn[0],g=CH[speakerKey].g,speaker=document.createElement("strong"),line=document.createElement("span"),lastLine=index==turns.length;el.style.display="none";el.classList.remove("has-photos");void el.offsetWidth;speaker.className="speaker";speaker.textContent=speakerKey=="harsh"?"Harsh":speakerKey=="poo"?"Poo":"Me";line.textContent=turn[1];el.dataset.speaker=speakerKey;el.replaceChildren(speaker,line);if(index==6){selfieRig.visible=true;setTimeout(function(){selfieLens.visible=false;setTimeout(function(){selfieLens.visible=true},180)},350)}if(lastLine){var strip=document.createElement("div");strip.className="chat-polaroids";[1,2,3].forEach(function(photoIndex,j){var photo=PHOTOS[photoIndex],card=document.createElement("div"),img=document.createElement("img"),caption=document.createElement("span");card.className="chat-polaroid";card.style.setProperty("--r",(j-1)*4+"deg");img.src=photo.src;img.alt=photo.cap;caption.textContent=photo.cap;card.appendChild(img);card.appendChild(caption);strip.appendChild(card)});el.classList.add("has-photos");el.appendChild(strip)}el.style.display="block";sbS.g=g;sbS.until=Date.now()+(lastLine?5500:2500);if(index<turns.length)chatTimer=setTimeout(nextLine,2500);else chatTimer=setTimeout(function(){el.style.display="none";el.classList.remove("has-photos");sbS.g=null;chatActive=false;selfieRig.visible=false},5500)}nextLine()}
-[[harsh,"name-harsh","harsh"],[me,"name-me","me"],[poo,"name-poo","poo"]].forEach(function(n){$(n[1]).addEventListener("click",function(e){e.stopPropagation();if(phase>=2&&!modalOpen)talk(n[2])})});
+function talk(k){clearTimeout(chatTimer);chatActive=true;selfieRig.visible=false;var turns=CH[k].turns,index=0,el=$("sb");function nextLine(){var turn=turns[index++],speakerKey=turn[0],g=CH[speakerKey].g,speaker=document.createElement("strong"),line=document.createElement("span"),lastLine=index==turns.length;el.style.display="none";el.classList.remove("has-photos");void el.offsetWidth;speaker.className="speaker";speaker.textContent=speakerKey=="harsh"?"Harsh":speakerKey=="poo"?"Poo":"Sru";line.textContent=turn[1];el.dataset.speaker=speakerKey;el.replaceChildren(speaker,line);if(index==6){selfieRig.visible=true;setTimeout(function(){selfieLens.visible=false;setTimeout(function(){selfieLens.visible=true},180)},350)}if(lastLine){var strip=document.createElement("div");strip.className="chat-polaroids";[1,2,3].forEach(function(photoIndex,j){var photo=PHOTOS[photoIndex],card=document.createElement("div"),img=document.createElement("img"),caption=document.createElement("span");card.className="chat-polaroid";card.style.setProperty("--r",(j-1)*4+"deg");img.src=photo.src;img.alt=photo.cap;caption.textContent=photo.cap;card.appendChild(img);card.appendChild(caption);strip.appendChild(card)});el.classList.add("has-photos");el.appendChild(strip)}el.style.display="block";sbS.g=g;sbS.until=Date.now()+(lastLine?5500:2500);if(index<turns.length)chatTimer=setTimeout(nextLine,2500);else chatTimer=setTimeout(function(){el.style.display="none";el.classList.remove("has-photos");sbS.g=null;chatActive=false;selfieRig.visible=false},5500)}nextLine()}
+[[harsh,"name-harsh","harsh"],[me,"name-sru","me"],[poo,"name-poo","poo"]].forEach(function(n){$(n[1]).addEventListener("click",function(e){e.stopPropagation();if(phase>=2&&!modalOpen)talk(n[2])})});
 function pf(x,y){var e=document.createElement("div");e.className="pf";e.textContent=["✨","💛","⭐","🫶"][Math.floor(Math.random()*4)];e.style.left=x+"px";e.style.top=y+"px";document.body.appendChild(e);setTimeout(function(){e.remove()},1000)}
 function inter(g,key,x,z,text,off){g.position.set(x,T,z);g.rotation.y=Math.atan2(-x,-z);g.userData.key=key;island.add(g);hits.push(g);
  var el=document.createElement("div");el.className="lab";el.textContent=text;el.onclick=function(e){e.stopPropagation();act(key)};$("labs").appendChild(el);labs.push({key:key,g:g,off:off,el:el})}
@@ -288,7 +289,7 @@ function clearSky(){if(phase!=0)return;phase=1;$("hud").classList.add("revealed"
   tween(1200,function(p){me.userData.head.rotation.x=.45*(1-p);me.scale.y=.85+.15*p})});
  arrive(harsh,-.72,.8,1700);arrive(poo,.72,.8,2300);
  setTimeout(function(){say("And then, both of you came into my life, like a light in the darkness. 💛")},3200);
- setTimeout(function(){say("Now it’s our island. Every little thing here holds a memory.","Click a memory button to explore · click Me to hear our chat · drag to spin");phase=2;$("cnt").style.display="block"},7600)}
+ setTimeout(function(){say("Now it’s our island. Every little thing here holds a memory.","Click a memory button to explore · click Sru to hear our chat · drag to spin");phase=2;$("cnt").style.display="block"},7600)}
 function act(key){if(key=="bigcloud")return clearSky();if(phase<2||modalOpen)return;if(CH[key])return talk(key);openModal(key)}
 function openModal(key){var d=DATA[key];visited[key]=1;modalOpen=true;
  $("mt").textContent=d.t;$("mp").innerHTML=d.p.map(function(t){return "<p>"+t+"</p>"}).join("");
@@ -337,7 +338,7 @@ var vec=new THREE.Vector3();
  var cf0=1+.9*Math.pow(1-Math.min(1,now/3200),3);cam.position.set(px*1.6,(1.8+dist*.17-py*.8)*cf0,dist*.95*cf0);cam.lookAt(0,1,0);
  var w=innerWidth,h=innerHeight;
  if(sbS.g){var sb=$("sb");if(Date.now()>sbS.until){sb.style.display="none";sbS.g=null}else{sbS.g.getWorldPosition(vec);vec.y+=1.6;vec.project(cam);sb.style.left=((vec.x*.5+.5)*w)+"px";sb.style.top=((-vec.y*.5+.5)*h)+"px"}}
- [[harsh,"name-harsh"],[me,"name-me"],[poo,"name-poo"]].forEach(function(n){var tag=$(n[1]),on=phase>=2&&n[0].visible;tag.style.display=on?"block":"none";if(on){n[0].getWorldPosition(vec);vec.y+=1.24;vec.project(cam);tag.style.left=((vec.x*.5+.5)*w)+"px";tag.style.top=((-vec.y*.5+.5)*h)+"px"}});
+ [[harsh,"name-harsh"],[me,"name-sru"],[poo,"name-poo"]].forEach(function(n){var tag=$(n[1]),on=phase>=2&&n[0].visible;tag.style.display=on?"block":"none";if(on){n[0].getWorldPosition(vec);vec.y+=1.24;vec.project(cam);tag.style.left=((vec.x*.5+.5)*w)+"px";tag.style.top=((-vec.y*.5+.5)*h)+"px"}});
  labs.forEach(function(l){var on=phase>=2&&!modalOpen;l.el.style.display=on?"block":"none";if(on){l.g.getWorldPosition(vec);vec.y+=l.off;vec.project(cam);l.el.style.left=((vec.x*.5+.5)*w-l.el.offsetWidth/2)+"px";l.el.style.top=((-vec.y*.5+.5)*h)+"px"}});
  bl.style.display=phase==0?"block":"none";if(phase==0){vec.set(0,0,0);big.getWorldPosition(vec);vec.y+=1.4;vec.project(cam);bl.style.left=((vec.x*.5+.5)*w-bl.offsetWidth/2)+"px";bl.style.top=((-vec.y*.5+.5)*h)+"px"}
  R.render(scene,cam)})(0);
