@@ -18,6 +18,10 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
 #cap .hn{display:table;margin:14px auto 0;padding:4px 12px;border-radius:99px;background:#0005;font-size:clamp(13px,2.2vw,16px);font-weight:500;opacity:.95}
 .sb{position:fixed;z-index:7;display:none;transform:translate(-50%,-100%);background:#fff;color:#2b2b3a;border-radius:18px;padding:9px 14px;font-size:15px;line-height:1.3;max-width:220px;text-align:center;box-shadow:0 4px 0 #0004;pointer-events:none;margin-top:-6px;animation:pp .35s cubic-bezier(.2,1.6,.4,1)}
 .sb:after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-9px;border:9px solid transparent;border-top:10px solid #fff;border-bottom:0}
+.sb .speaker{display:block;margin-bottom:3px;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.sb[data-speaker="harsh"] .speaker{color:#d75c18}
+.sb[data-speaker="me"] .speaker{color:#287ac2}
+.sb[data-speaker="poo"] .speaker{color:#c83c88}
 .pf{position:fixed;z-index:8;font-size:26px;pointer-events:none;animation:pfu 1s ease-out forwards}
 @keyframes pfu{from{transform:translate(-50%,-50%) scale(.4);opacity:1}to{transform:translate(-50%,-220%) scale(1.3);opacity:0}}
 .lab{position:fixed;left:0;top:0;z-index:4;background:#fff;color:#333;border-radius:99px;padding:5px 12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #0004;white-space:nowrap;display:none}
@@ -123,7 +127,7 @@ var hits=[],labs=[],visited={},phase=0,modalOpen=false;
 [[me,"me"],[harsh,"harsh"],[poo,"poo"]].forEach(function(c){c[0].userData.key=c[1];hits.push(c[0])});
 var CH={me:{g:me,l:["Still can’t believe I’m this lucky. 💛","You two are my favourite people. Period."]},harsh:{g:harsh,l:["Harsh, your creative brain is seriously one of a kind. 🎨","Thanks for teaching me art — and being patient with me! 😄","Whenever I see something colorful, I think of you. 🖌️","You make every idea a little more awesome. ✨"]},poo:{g:poo,l:["Poo, you can turn the most ordinary day into a whole story. 😂","Your laugh is basically our group’s sound track. 🎶","Remember when you called it the great depression? Iconic. ☁️","There’s never a dull moment when you’re around. 💖"]}};
 var sbS={g:null,until:0};
-function talk(k){var c=CH[k],l=c.l,g=c.g;c.n=c.n==null?0:(c.n+1)%l.length;var el=$("sb");el.style.display="none";void el.offsetWidth;el.textContent=l[c.n];el.style.display="block";sbS.g=g;sbS.until=Date.now()+3400;tween(520,function(p){g.userData.hop=Math.sin(p*Math.PI)*.9})}
+function talk(k){var c=CH[k],l=c.l,g=c.g;c.n=c.n==null?0:(c.n+1)%l.length;var el=$("sb"),speaker=document.createElement("strong"),line=document.createElement("span");el.style.display="none";void el.offsetWidth;speaker.className="speaker";speaker.textContent=k=="harsh"?"Harsh":k=="poo"?"Poo":"Me";line.textContent=l[c.n];el.dataset.speaker=k;el.replaceChildren(speaker,line);el.style.display="block";sbS.g=g;sbS.until=Date.now()+3400;tween(520,function(p){g.userData.hop=Math.sin(p*Math.PI)*.9})}
 function pf(x,y){var e=document.createElement("div");e.className="pf";e.textContent=["✨","💛","⭐","🫶"][Math.floor(Math.random()*4)];e.style.left=x+"px";e.style.top=y+"px";document.body.appendChild(e);setTimeout(function(){e.remove()},1000)}
 function inter(g,key,x,z,text,off){g.position.set(x,T,z);g.rotation.y=Math.atan2(-x,-z);g.userData.key=key;island.add(g);hits.push(g);
  var el=document.createElement("div");el.className="lab";el.textContent=text;el.onclick=function(e){e.stopPropagation();act(key)};$("labs").appendChild(el);labs.push({key:key,g:g,off:off,el:el})}
