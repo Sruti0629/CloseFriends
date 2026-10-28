@@ -186,12 +186,22 @@ tree.add(M(new THREE.BoxGeometry(2,.05,1.6),pkM,0,.03,0));
 var pitems=[];function pit(m,x,y,z){m.position.set(x,y,z);tree.add(m);pitems.push({m:m,y:y});return m}
 tree.add(M(new THREE.BoxGeometry(.7,.36,.5),mat("#c9904f"),-.55,.23,-.25));
 var lidG=new THREE.Group();lidG.position.set(-.55,.42,-.5);lidG.add(M(new THREE.BoxGeometry(.74,.06,.5),mat("#b9824f"),0,0,.25));tree.add(lidG);
-[[.1,.12,.15],[.3,.12,.0],[.2,.12,.35]].forEach(function(q){pit(M(new THREE.SphereGeometry(.1,10,8),mat("#e63946")),q[0],q[1],q[2])});
-pit(M(new THREE.CylinderGeometry(.3,.3,.03,14),mat("#ffffff")),.55,.08,.3);
-[[0,0],[.14,.1],[-.12,.1]].forEach(function(q){pit(M(new THREE.CylinderGeometry(.07,.07,.03,10),mat("#d9a066")),.55+q[0],.12,.3+q[1])});
-[[.62,-.4,"#ff5fa2"],[.85,-.25,"#1e90ff"]].forEach(function(q){var cg=new THREE.Group();cg.add(M(new THREE.CylinderGeometry(.09,.07,.12,10),mat("#ffffff"),0,.06,0));cg.add(M(new THREE.SphereGeometry(.1,10,8),mat(q[2]),0,.17,0));pit(cg,q[0],.06,q[1])});
-pit(M(new THREE.CylinderGeometry(.07,.07,.38,8),mat("#34c759")),-.25,.24,.45);
-pit(M(new THREE.CylinderGeometry(.2,.2,.03,14),mat("#ffd23f")),-.7,.07,.4);
+var sandwich=new THREE.Group(),sandwichShape=new THREE.Shape();
+sandwichShape.moveTo(-.22,-.16);sandwichShape.lineTo(.22,-.16);sandwichShape.lineTo(-.02,.2);sandwichShape.closePath();
+function sandwichLayer(color,y){sandwich.add(M(new THREE.ExtrudeGeometry(sandwichShape,{depth:.2,bevelEnabled:false}),mat(color),0,y,-.1))}
+sandwichLayer("#f2c879",.04);sandwichLayer("#57c858",.09);sandwichLayer("#ed554e",.12);sandwichLayer("#ffe45e",.15);sandwichLayer("#f2c879",.18);
+pit(sandwich,.12,.1,.05);
+var pizza=new THREE.Group();
+pizza.add(M(new THREE.CylinderGeometry(.25,.25,.07,12),mat("#d99a45"),0,.045,0));
+pizza.add(M(new THREE.CylinderGeometry(.21,.21,.025,12),mat("#f7d45b"),0,.09,0));
+[[ -.09,-.07],[.08,-.08],[-.01,.07],[.12,.08]].forEach(function(q){pizza.add(M(new THREE.CylinderGeometry(.035,.035,.012,8),mat("#df4b43"),q[0],.11,q[1]))});
+pit(pizza,.62,.08,.38);
+var coolDrink=new THREE.Group(),cupMat=new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.72,flatShading:true});
+coolDrink.add(M(new THREE.CylinderGeometry(.12,.09,.28,10),cupMat,0,.15,0));
+coolDrink.add(M(new THREE.CylinderGeometry(.085,.085,.17,10),mat("#ff5fa2"),0,.13,0));
+coolDrink.add(M(new THREE.CylinderGeometry(.13,.13,.025,10),mat("#ffffff"),0,.3,0));
+var straw=M(new THREE.CylinderGeometry(.018,.018,.2,6),mat("#34c759"),.04,.4,0);straw.rotation.z=-.2;coolDrink.add(straw);
+pit(coolDrink,.72,.06,-.3);
 FX.tree=function(){tween(450,function(p){lidG.rotation.x=-1.35*p});pitems.forEach(function(o,k){setTimeout(function(){tween(520,function(p){o.m.position.y=o.y+Math.sin(p*Math.PI)*.4})},300+k*90)});fall();setTimeout(function(){tween(500,function(p){lidG.rotation.x=-1.35*(1-p)})},2700)};
 inter(tree,"tree",2.7,-1.9,"🧺 Snack",1.8);
 // swing (tap: big push)
