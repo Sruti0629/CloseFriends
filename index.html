@@ -23,10 +23,10 @@ html,body{height:100%;overflow:hidden;background:#3b4252;font-family:Fredoka,"Tr
 .lab{position:fixed;left:0;top:0;z-index:4;background:#fff;color:#333;border-radius:99px;padding:5px 12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #0004;white-space:nowrap;display:none}
 .lab:hover{transform:translateY(-2px) scale(1.08);box-shadow:0 5px 0 #0004}
 .lab.done{background:#c9f7c0}
-.char-name{position:fixed;z-index:4;display:none;transform:translate(-50%,-100%);padding:0 3px;color:#fff;font-size:clamp(12px,1.5vw,16px);font-weight:700;letter-spacing:.04em;text-shadow:-1px -1px 0 #333,1px -1px 0 #333,-1px 1px 0 #333,1px 1px 0 #333,0 2px 4px #000b;pointer-events:none;white-space:nowrap}
-#name-harsh{color:#ffd2a8}
-#name-me{color:#c8e8ff}
-#name-poo{color:#ffc8e6}
+.char-name{position:fixed;z-index:4;display:none;transform:translate(-50%,-72%) rotate(-5deg);padding:3px 12px 4px;clip-path:polygon(0 12%,100% 0,92% 100%,7% 88%);color:#fff;font-size:clamp(12px,1.5vw,16px);font-weight:700;letter-spacing:.04em;text-shadow:0 1px 2px #0008;filter:drop-shadow(0 2px 2px #0008);pointer-events:none;white-space:nowrap}
+#name-harsh{background:#e66a22}
+#name-me{background:#287ac2;transform:translate(-50%,-72%) rotate(4deg);clip-path:polygon(8% 0,100% 12%,93% 88%,0 100%)}
+#name-poo{background:#c83c88;transform:translate(-50%,-72%) rotate(-3deg);clip-path:polygon(0 0,92% 10%,100% 88%,8% 100%)}
 @keyframes bn{50%{margin-top:-7px}}
 #modal,#fin{position:fixed;inset:0;z-index:20;background:#0009;display:none;align-items:center;justify-content:center;padding:4vw;touch-action:pan-y}
 #modal.on,#fin.on{display:flex}
@@ -281,7 +281,7 @@ var vec=new THREE.Vector3();
  var cf0=1+.9*Math.pow(1-Math.min(1,now/3200),3);cam.position.set(px*1.6,(1.8+dist*.17-py*.8)*cf0,dist*.95*cf0);cam.lookAt(0,1,0);
  var w=innerWidth,h=innerHeight;
  if(sbS.g){var sb=$("sb");if(Date.now()>sbS.until){sb.style.display="none";sbS.g=null}else{sbS.g.getWorldPosition(vec);vec.y+=1.6;vec.project(cam);sb.style.left=((vec.x*.5+.5)*w)+"px";sb.style.top=((-vec.y*.5+.5)*h)+"px"}}
- [[harsh,"name-harsh"],[me,"name-me"],[poo,"name-poo"]].forEach(function(n){var tag=$(n[1]),on=phase>=2&&n[0].visible;tag.style.display=on?"block":"none";if(on){n[0].getWorldPosition(vec);vec.y+=1.35;vec.project(cam);tag.style.left=((vec.x*.5+.5)*w)+"px";tag.style.top=((-vec.y*.5+.5)*h)+"px"}});
+ [[harsh,"name-harsh"],[me,"name-me"],[poo,"name-poo"]].forEach(function(n){var tag=$(n[1]),on=phase>=2&&n[0].visible;tag.style.display=on?"block":"none";if(on){n[0].getWorldPosition(vec);vec.y+=1.52;vec.project(cam);tag.style.left=((vec.x*.5+.5)*w)+"px";tag.style.top=((-vec.y*.5+.5)*h)+"px"}});
  labs.forEach(function(l){var on=phase>=2&&!modalOpen;l.el.style.display=on?"block":"none";if(on){l.g.getWorldPosition(vec);vec.y+=l.off;vec.project(cam);l.el.style.left=((vec.x*.5+.5)*w-l.el.offsetWidth/2)+"px";l.el.style.top=((-vec.y*.5+.5)*h)+"px"}});
  if(phase==0){vec.set(0,0,0);big.getWorldPosition(vec);vec.y+=1.4;vec.project(cam);bl.style.left=((vec.x*.5+.5)*w-bl.offsetWidth/2)+"px";bl.style.top=((-vec.y*.5+.5)*h)+"px"}
  R.render(scene,cam)})(0);
